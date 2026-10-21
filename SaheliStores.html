@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saheli General Stores</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts (Cinzel for Royal feel) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            royal: {
+              gold: '#D4AF37',
+              goldDark: '#AA820A',
+              lightGold: '#FAF4E6',
+              bg: '#FDFBF7',
+              text: '#1C1917',
+              accent: '#B8860B'
+            }
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-royal-bg text-royal-text font-sans antialiased min-h-screen flex flex-col selection:bg-royal-gold selection:text-white">
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="bg-gradient-to-r from-royal-gold via-yellow-500 to-royal-gold text-white text-xs sm:text-sm font-semibold py-2 px-4 text-center shadow-sm flex items-center justify-center gap-2">
+    <i class="fa-solid font-bold fa-truck-fast"></i>
+    <span>All Chhattisgarh Delivery Available &nbsp;|&nbsp; Local Fast Delivery</span>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-royal-gold/20 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Name -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="resetSearch()">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-royal-gold to-yellow-200 flex items-center justify-center shadow-md border border-royal-gold">
+          <i class="fa-solid fa-crown text-white text-lg"></i>
+        </div>
+        <h1 class="font-cinzel text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-royal-goldDark via-yellow-600 to-royal-gold">
+          Saheli General Stores
+        </h1>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-md mx-2 sm:mx-6">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-royal-goldDark"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="handleSearch()"
+            placeholder="Search products..." 
+            class="w-full pl-10 pr-4 py-2 text-sm rounded-full bg-royal-lightGold/60 border border-royal-gold/40 focus:outline-none focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 transition-all placeholder:text-stone-400"
+          >
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-royal-gold text-royal-goldDark bg-royal-lightGold text-xs sm:text-sm font-semibold">
+          <i class="fa-solid fa-boxes-stacked"></i> All Products
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN PRODUCT SECTION -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+      <!-- Products render here -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 rounded-full bg-royal-lightGold flex items-center justify-center mb-4 text-royal-gold">
+        <i class="fa-solid fa-store text-3xl"></i>
+      </div>
+      <h3 class="font-cinzel text-xl font-bold text-stone-700">No Products Found</h3>
+      <p class="text-sm text-stone-500 mt-1 max-w-xs">New products will appear here once added from the owner management panel.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-stone-900 text-stone-300 mt-auto border-t-2 border-royal-gold">
+    <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div>
+        <p class="font-cinzel font-bold text-royal-gold text-sm">Saheli General Stores</p>
+        <p class="text-stone-400 mt-0.5">Serving with trust across Chhattisgarh</p>
+      </div>
+      <div class="flex items-center gap-6">
+        <!-- Hidden Admin Entry Point -->
+        <button onclick="openLoginModal()" class="text-stone-500 hover:text-royal-gold transition-colors flex items-center gap-1.5 cursor-pointer">
+          <i class="fa-solid fa-lock text-xs"></i>
+          <span>Store Management</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 1. LOGIN MODAL -->
+  <div id="loginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-royal-gold rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-center">
+      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="w-12 h-12 rounded-full bg-royal-lightGold text-royal-gold mx-auto flex items-center justify-center text-xl mb-4">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+
+      <h2 class="font-cinzel font-bold text-lg text-stone-800">Only for website owner</h2>
+      <p class="text-xs text-stone-500 mt-1 mb-6">Please enter password to manage website</p>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <input 
+          type="password" 
+          id="adminPasswordInput"
+          placeholder="Enter Passcode" 
+          required
+          class="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 outline-none text-center tracking-widest text-lg font-semibold"
+        >
+        <button 
+          type="submit" 
+          class="w-full py-3 bg-gradient-to-r from-royal-gold to-yellow-600 text-white font-semibold rounded-xl hover:opacity-95 transition-all shadow-md"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. WRONG PASSWORD POPUP -->
+  <div id="wrongPassModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-red-500 rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl animate-bounce">
+      <div class="w-12 h-12 rounded-full bg-red-100 text-red-500 mx-auto flex items-center justify-center text-xl mb-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="font-bold text-red-600 text-lg">Wrong Password!</h3>
+      <p class="text-xs text-stone-500 mt-1">Redirecting back to store website...</p>
+    </div>
+  </div>
+
+  <!-- 3. ADMIN PANEL MODAL -->
+  <div id="adminPanelModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white border-2 border-royal-gold rounded-2xl p-6 max-w-lg w-full shadow-2xl my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-200">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-royal-gold text-xl"></i>
+          <h2 class="font-cinzel font-bold text-lg text-stone-800">Admin Control Panel</h2>
+        </div>
+        <button onclick="closeAdminPanel()" class="text-stone-400 hover:text-stone-600">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Add Product Form -->
+      <form onsubmit="handleAddProduct(event)" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Product Title</label>
+          <input type="text" id="prodTitle" required placeholder="e.g. Royal Basmati Rice 5kg" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-royal-gold outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Price (₹)</label>
+          <input type="number" id="prodPrice" required placeholder="e.g. 499" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-royal-gold outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Upload Product Image (Gallery/Camera)</label>
+          <input type="file" id="prodImage" accept="image/*" required class="w-full text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-royal-lightGold file:text-royal-goldDark hover:file:bg-amber-100 cursor-pointer">
+        </div>
+
+        <button type="submit" id="uploadBtn" class="w-full py-2.5 bg-royal-gold text-white font-semibold rounded-lg hover:bg-royal-goldDark transition-colors text-sm shadow">
+          <i class="fa-solid fa-plus mr-1"></i> Upload Product
+        </button>
+      </form>
+
+      <!-- Manage Existing Products -->
+      <div class="mt-6 pt-4 border-t border-stone-200">
+        <h3 class="text-xs font-bold text-stone-600 uppercase tracking-wider mb-3">Existing Products (<span id="adminProdCount">0</span>)</h3>
+        <div id="adminProductList" class="max-h-60 overflow-y-auto space-y-2 pr-1">
+          <!-- Items injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. DELETE CONFIRMATION MODAL -->
+  <div id="deleteConfirmModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-xl border border-stone-200">
+      <div class="w-12 h-12 rounded-full bg-red-100 text-red-500 mx-auto flex items-center justify-center text-xl mb-3">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <h3 class="font-bold text-stone-800 text-base">Confirm Delete</h3>
+      <p class="text-xs text-stone-500 mt-1 mb-5">Kya aap is product ko hamesha ke liye delete karna chahte hain?</p>
+      <div class="flex gap-3">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2 border rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-50">Cancel</button>
+        <button id="confirmDeleteBtn" class="flex-1 py-2 bg-red-600 text-white rounded-xl text-xs font-semibold hover:bg-red-700">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem('saheli_products') || '[]');
+    let deleteTargetId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts(products);
+    });
+
+    // RENDER PRODUCTS ON WEBSITE
+    function renderProducts(items) {
+      const grid = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+      grid.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      empty.classList.remove('flex');
+
+      items.forEach(p => {
+        const phone = "918085540026";
+        const msg = encodeURIComponent(`Hello Saheli General Stores!\nI want to buy:\nProduct: ${p.title}\nPrice: ₹${p.price}\nPlease share delivery details.`);
+        const waLink = `https://wa.me/${phone}?text=${msg}`;
+
+        grid.innerHTML += `
+          <div class="bg-white rounded-2xl border border-stone-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-between group">
+            <div class="relative w-full pt-[100%] bg-stone-50 overflow-hidden">
+              <img src="${p.image}" alt="${p.title}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            </div>
+            <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="font-semibold text-xs sm:text-sm text-stone-800 line-clamp-2">${p.title}</h3>
+                <p class="font-bold text-sm sm:text-base text-royal-goldDark mt-1.5">₹${p.price}</p>
+              </div>
+              <a 
+                href="${waLink}" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="w-full mt-3 py-2 bg-gradient-to-r from-royal-gold to-yellow-600 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 hover:opacity-95 shadow-sm active:scale-95 transition-all text-center"
+              >
+                <i class="fa-brands fa-whatsapp text-sm"></i> Buy
+              </a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // SEARCH FUNCTION
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p => p.title.toLowerCase().includes(query));
+      renderProducts(filtered);
+    }
+
+    function resetSearch() {
+      document.getElementById('searchInput').value = '';
+      renderProducts(products);
+    }
+
+    // ADMIN LOGIN HANDLERS
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('adminPasswordInput').value = '';
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPasswordInput').value;
+
+      if (pass === 'myselfyg26') {
+        closeLoginModal();
+        openAdminPanel();
+      } else {
+        closeLoginModal();
+        showWrongPassModal();
+      }
+    }
+
+    function showWrongPassModal() {
+      const modal = document.getElementById('wrongPassModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 2000);
+    }
+
+    // ADMIN PANEL MANAGEMENT
+    function openAdminPanel() {
+      document.getElementById('adminPanelModal').classList.remove('hidden');
+      renderAdminProducts(products);
+    }
+
+    function closeAdminPanel() {
+      document.getElementById('adminPanelModal').classList.add('hidden');
+    }
+
+    // IMAGE FILE TO BASE64
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // ADD PRODUCT
+    async function handleAddProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('prodTitle').value;
+      const price = document.getElementById('prodPrice').value;
+      const fileInput = document.getElementById('prodImage');
+      const uploadBtn = document.getElementById('uploadBtn');
+
+      if (!fileInput.files[0]) return;
+
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+      try {
+        const imageBase64 = await getBase64(fileInput.files[0]);
+        const newProduct = {
+          id: 'prod_' + Date.now(),
+          title: title,
+          price: price,
+          image: imageBase64
+        };
+
+        products.unshift(newProduct);
+        localStorage.setItem('saheli_products', JSON.stringify(products));
+
+        renderProducts(products);
+        renderAdminProducts(products);
+
+        document.getElementById('prodTitle').value = '';
+        document.getElementById('prodPrice').value = '';
+        fileInput.value = '';
+        alert("Product Uploaded Successfully!");
+      } catch (err) {
+        alert("Upload Failed: " + err.message);
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.innerHTML = '<i class="fa-solid fa-plus mr-1"></i> Upload Product';
+      }
+    }
+
+    // ADMIN PRODUCTS LIST
+    function renderAdminProducts(items) {
+      const list = document.getElementById('adminProductList');
+      document.getElementById('adminProdCount').innerText = items.length;
+      list.innerHTML = '';
+
+      items.forEach(p => {
+        list.innerHTML += `
+          <div class="flex items-center justify-between p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+            <div class="flex items-center gap-3">
+              <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg border">
+              <div>
+                <p class="text-xs font-semibold text-stone-800 line-clamp-1">${p.title}</p>
+                <p class="text-xs text-royal-goldDark font-bold">₹${p.price}</p>
+              </div>
+            </div>
+            <button onclick="askDeleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-2 text-sm">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    // DELETE PRODUCT
+    function askDeleteProduct(id) {
+      deleteTargetId = id;
+      document.getElementById('deleteConfirmModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      deleteTargetId = null;
+      document.getElementById('deleteConfirmModal').classList.add('hidden');
+    }
+
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+      if (deleteTargetId) {
+        products = products.filter(p => p.id !== deleteTargetId);
+        localStorage.setItem('saheli_products', JSON.stringify(products));
+        renderProducts(products);
+        renderAdminProducts(products);
+        closeDeleteModal();
+      }
+    };
+  </script>
+</body>
+</html>
